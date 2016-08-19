@@ -11,9 +11,18 @@ use App\Readers\CSV;
 
 class MainController extends Controller
 {
-    public function index(AgentsContactsMatcher $agentsToContactsMatcher)
+    public function index()
     {
-    	$matcher = new $agentsToContactsMatcher(new CSV(), new ZipCodeApiClient());
-    	dd($matcher->getContactsWithAgent());
+    	return view('home');
+    }
+
+    public function match(AgentsContactsMatcher $agentsToContactsMatcher)
+    {
+    	$agentA = new Agent(request()->input('agent_a'));
+    	$agentB = new Agent(request()->input('agent_b'));
+
+    	$matcher = new $agentsToContactsMatcher(new CSV(), new ZipCodeApiClient(), $agentA, $agentB);
+
+    	return view('home')->with('matches', $matcher->getContactsWithAgent());
     }
 }

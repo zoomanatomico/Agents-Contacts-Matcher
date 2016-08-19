@@ -14,17 +14,15 @@ class AgentsContactsMatcher
 	protected $zipCodeAgentB;
 	protected $ZipCodeApiClient;
 
-	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient) {
+	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, Agent $agentA, Agent $agentB) {
 		$this->contactsData = $reader->fetchContacts();
-		$this->zipCodeAgentA = 1;
-		$this->zipCodeAgentB = 2;	
+		$this->zipCodeAgentA = $agentA->value();
+		$this->zipCodeAgentB = $agentB->value();	
 		$this->ZipCodeApiClient = $zipCodeApiClient;
 	}
 
-
 	public function getContactsWithAgent()
 	{
-
 		$xf = t\comp(
    			t\map(function ($value) {
 
@@ -33,11 +31,13 @@ class AgentsContactsMatcher
    				$distanceToAgentA = $this->ZipCodeApiClient->getDistanceInKms($zipCodeContact, $this->zipCodeAgentA);
    				$distanceToAgentB = $this->ZipCodeApiClient->getDistanceInKms($zipCodeContact, $this->zipCodeAgentB);
 
-   				$agentZipCode = $this->getZipCodeOfAssignedAgent($distanceToAgentA, $distanceToAgentB);
-   				
-   			 	$value[2] = $agentZipCode;
+				$matchedContact = [
+					'name' => $value[0],
+					'zipCode' => $zipCodeContact,
+					'agentZipCode' => $this->getZipCodeOfAssignedAgent($distanceToAgentA, $distanceToAgentB)
+				];
 
-   			 	return $value;
+   			 	return $matchedContact;
    			})
 		);
 

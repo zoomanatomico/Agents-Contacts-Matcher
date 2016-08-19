@@ -19,8 +19,6 @@ class ZipCodeApiClient
 	{
 		$requestData = sprintf("%s/%s/km", $zipCode1, $zipCode2);
 
-		return 1;
-
 		$callToZipCodeApi = $this->client->request('GET', $requestData);
 		
 		return json_decode($callToZipCodeApi->getBody()->getContents())->distance;
