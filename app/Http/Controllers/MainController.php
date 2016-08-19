@@ -11,20 +11,9 @@ use App\Readers\CSV;
 
 class MainController extends Controller
 {
-
-	public function index(CSV $reader) {
-		$zip = new $reader();
-		dd($zip->fetchContacts());
-	}
-
-    /*public function index(AgentsToContactsMatcher $agentsToContactsMatcher)
+    public function index(AgentsToContactsMatcher $agentsToContactsMatcher)
     {
     	$matcher = new $agentsToContactsMatcher(new CSV(), new ZipCodeApiClient());
     	$matcher->getContactsWithAgent();
-    }*/
-
-   
+    }
 }
-
-
-
