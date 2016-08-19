@@ -6,7 +6,10 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*"
+        "laravel/framework": "5.2.*",
+        "guzzlehttp/guzzle": "^6.2",
+        "mtdowling/transducers": "^0.3.0",
+        "league/csv": "^8.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
