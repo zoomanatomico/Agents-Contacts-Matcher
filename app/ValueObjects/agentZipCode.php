@@ -8,7 +8,7 @@ namespace App\ValueObjects;
  * reference http://martinfowler.com/bliki/ValueObject.html
 */
 
-class Agent
+class AgentZipCode
 {
 	private $zipCode;
 

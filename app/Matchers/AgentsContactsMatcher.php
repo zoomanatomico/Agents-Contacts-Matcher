@@ -3,7 +3,7 @@
 namespace App\Matchers;
 
 use App\Calculators\ZipCodeApiClient;
-use App\ValueObjects\Agent;
+use App\ValueObjects\agentZipCode;
 use Transducers as t;
 use App\Readers\CSV;
 
@@ -14,16 +14,31 @@ class AgentsContactsMatcher
 	protected $zipCodeAgentB;
 	protected $ZipCodeApiClient;
 
-	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, Agent $agentA, Agent $agentB) {
+	/**
+	 * For decoupling and testing is better to inject the dependencies in the constructor.
+	 * http://martinfowler.com/articles/injection.html
+	 */
+	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, 
+			agentZipCode $zipCodeAgentA, agentZipCode $zipCodeAgentB) {
+
 		$this->contactsData = $reader->fetchContacts();
-		$this->zipCodeAgentA = $agentA->value();
-		$this->zipCodeAgentB = $agentB->value();	
+		$this->zipCodeAgentA = $zipCodeAgentA->value();
+		$this->zipCodeAgentB = $zipCodeAgentB->value();	
 		$this->ZipCodeApiClient = $zipCodeApiClient;
 	}
 
+	/**
+	 *
+	 * Main algorithm, this matches every contact loaded from the CSV with the nearest agent
+	 * using the zipCode as a meter of proximity.
+	 *
+	 * @return array [['name' => 'jim', 'zipCode' => 123, 'agentZipCode' => 133]]
+	 */
 	public function getContactsWithAgent()
 	{
-		$xf = t\comp(
+		//To avoid loading all the processed data into memory a transducer is used,
+		//In this case every contact is being processed once a time in memory.
+		$transformer = t\comp(
    			t\map(function ($value) {
 
    				$zipCodeContact = $value[1];
@@ -41,9 +56,18 @@ class AgentsContactsMatcher
    			})
 		);
 
-		return t\transduce($xf, t\array_reducer(), $this->contactsData);
+		return t\transduce($transformer, t\array_reducer(), $this->contactsData);
 	}
 
+	/**
+     *
+     * given 2 distances the function validates wich agent is nearer to the contact 
+     * and returns the zipCode of that agent.
+	 *
+	 * @param int $distanceToAgentA distance in kms from contact to agentA location
+	 * @param int $distanceToAgentB distance in kms from contact to agentB location
+	 * @return int
+	 */
 	private function getZipCodeOfAssignedAgent($distanceToAgentA, $distanceToAgentB) 
 	{
 		return ($distanceToAgentA <= $distanceToAgentB) ? $this->zipCodeAgentA : $this->zipCodeAgentB;
