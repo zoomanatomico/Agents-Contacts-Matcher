@@ -1,9 +1,7 @@
-# Agents Contact Matcher
+# Agents Contacts Matcher
 
 Agents Contact Matcher is an app to match the nearest Agent to each contact provided by a CSV file.
-
-
-![alt tag](http://g.recordit.co/HzNHusmDLx.gif)
+A short video of the demo can be found [here](http://recordit.co/GJE6tXWVPX)
 
 ##  [Transducers](https://github.com/mtdowling/transducers.php)
 Used to optimize the iterations of the CSV file, Transducers help to reduce memory consumption in PHP bucles.
@@ -15,7 +13,15 @@ De facto standard to make http calls in PHP, in this case I used it to make GET 
 ##  [THE PHP LEAGUE - CSV](https://github.com/thephpleague/csv)
 To load the csv file in an easy way
 
-## Improvements
-1. Cache the response of the API call.
-2. Add Behat to make behavior-driven testing for future features.
-3. Add integration tests for reading the CSV file and for calling the zipcodeapi API.
+## TODOS
+1. Add Behat to make behavior-driven testing for future features.
+2. Add integration tests for reading the CSV file and for calling the zipcodeapi API.
+3. Improve UI by adding Bootstrap and AngularJS
+
+## Important Folders & Files
+1. **app/Calculators/**
+2. **app/Http/MainController.php**
+3. **app/Matchers/**
+4. **app/Readers/**
+5. **app/ValueObjects**
+6. **app/AgentsContactsMatchersTest.php**

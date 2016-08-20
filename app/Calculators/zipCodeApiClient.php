@@ -2,6 +2,7 @@
 
 namespace App\Calculators;
 use GuzzleHttp\Client;
+use Cache;
 
 class ZipCodeApiClient
 {
@@ -23,14 +24,23 @@ class ZipCodeApiClient
 		//What should we do when for example the zipCode is not valid but right now for matters of time
 		//I can deal with it.
 
+		$cacheName = "$zipCode1-$zipCode2";
+		$invertedCacheName = "$zipCode2-$zipCode1";
+
+		if(Cache::has($cacheName) || Cache::has($invertedCacheName)) {
+			return Cache::get($cacheName);
+		}
+
 		try {
 			$callToZipCodeApi = $this->client->request('GET', $requestData);
 		
-			$response = json_decode($callToZipCodeApi->getBody()->getContents())->distance;	
+			$distance = json_decode($callToZipCodeApi->getBody()->getContents())->distance;
+			
+			Cache::forever($cacheName, $distance);
 		} catch (\Exception $e) {
-			$response = 0;
+			$distance = 0;
 		}
 
-		return $response;
+		return $distance;
 	}
 }
