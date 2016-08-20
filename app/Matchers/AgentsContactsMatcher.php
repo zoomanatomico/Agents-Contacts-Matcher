@@ -17,7 +17,7 @@ class AgentsContactsMatcher
 	 * For decoupling and testing is better to inject the dependencies in the constructor.
 	 * http://martinfowler.com/articles/injection.html
 	 */
-	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, $zipCodeAgentA, $zipCodeAgentB) {
+	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, $zipCodeAgentA=0, $zipCodeAgentB=0) {
 		$this->contactsData = $reader->fetchContacts();
 		$this->zipCodeApiClient = $zipCodeApiClient;
 		$this->zipCodeAgentA = $zipCodeAgentA;

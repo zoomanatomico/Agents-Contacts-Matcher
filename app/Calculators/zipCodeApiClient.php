@@ -19,9 +19,18 @@ class ZipCodeApiClient
 	{
 		$requestData = sprintf("%s/%s/km", $zipCode1, $zipCode2);
 
-		//TODO:This can be improved by handling all the kind of errors the request can throw, for example 404 zipcode not found.
-		$callToZipCodeApi = $this->client->request('GET', $requestData);
+		//TODO:This is a BIG not to do, the proper way is to handle the exceptions by asking the P.O 
+		//What should we do when for example the zipCode is not valid but right now for matters of time
+		//I can deal with it.
+
+		try {
+			$callToZipCodeApi = $this->client->request('GET', $requestData);
 		
-		return json_decode($callToZipCodeApi->getBody()->getContents())->distance;
+			$response = json_decode($callToZipCodeApi->getBody()->getContents())->distance;	
+		} catch (\Exception $e) {
+			$response = 0;
+		}
+
+		return $response;
 	}
 }

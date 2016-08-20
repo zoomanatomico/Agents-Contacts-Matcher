@@ -25,6 +25,6 @@ class MainController extends Controller
 
     	$matches = $matcher->getContactsWithAgent();
 
-    	return view('home')->compact($matches);
+    	return view('home')->with('matches', $matches);
     }
 }
