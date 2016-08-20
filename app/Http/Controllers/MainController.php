@@ -21,8 +21,10 @@ class MainController extends Controller
     	$agentA = new AgentZipCode(request()->input('agent_a'));
     	$agentB = new AgentZipCode(request()->input('agent_b'));
 
-    	$matcher = new $agentsToContactsMatcher(new CSV(), new ZipCodeApiClient(), $agentA, $agentB);
+    	$matcher = new $agentsToContactsMatcher(new CSV(), new ZipCodeApiClient(), $agentA->value(), $agentB->value());
 
-    	return view('home')->with('matches', $matcher->getContactsWithAgent());
+    	$matches = $matcher->getContactsWithAgent();
+
+    	return view('home')->compact($matches);
     }
 }

@@ -3,28 +3,25 @@
 namespace App\Matchers;
 
 use App\Calculators\ZipCodeApiClient;
-use App\ValueObjects\agentZipCode;
 use Transducers as t;
 use App\Readers\CSV;
 
 class AgentsContactsMatcher 
 {
 	protected $contactsData;
+	protected $zipCodeApiClient;
 	protected $zipCodeAgentA;
 	protected $zipCodeAgentB;
-	protected $ZipCodeApiClient;
 
 	/**
 	 * For decoupling and testing is better to inject the dependencies in the constructor.
 	 * http://martinfowler.com/articles/injection.html
 	 */
-	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, 
-			agentZipCode $zipCodeAgentA, agentZipCode $zipCodeAgentB) {
-
+	public function __construct(CSV $reader, ZipCodeApiClient $zipCodeApiClient, $zipCodeAgentA, $zipCodeAgentB) {
 		$this->contactsData = $reader->fetchContacts();
-		$this->zipCodeAgentA = $zipCodeAgentA->value();
-		$this->zipCodeAgentB = $zipCodeAgentB->value();	
-		$this->ZipCodeApiClient = $zipCodeApiClient;
+		$this->zipCodeApiClient = $zipCodeApiClient;
+		$this->zipCodeAgentA = $zipCodeAgentA;
+		$this->zipCodeAgentB = $zipCodeAgentB;
 	}
 
 	/**
@@ -36,6 +33,7 @@ class AgentsContactsMatcher
 	 */
 	public function getContactsWithAgent()
 	{
+
 		//To avoid loading all the processed data into memory a transducer is used,
 		//In this case every contact is being processed once a time in memory.
 		$transformer = t\comp(
@@ -43,8 +41,8 @@ class AgentsContactsMatcher
 
    				$zipCodeContact = $value[1];
 
-   				$distanceToAgentA = $this->ZipCodeApiClient->getDistanceInKms($zipCodeContact, $this->zipCodeAgentA);
-   				$distanceToAgentB = $this->ZipCodeApiClient->getDistanceInKms($zipCodeContact, $this->zipCodeAgentB);
+   				$distanceToAgentA = $this->zipCodeApiClient->getDistanceInKms($zipCodeContact, $this->zipCodeAgentA);
+   				$distanceToAgentB = $this->zipCodeApiClient->getDistanceInKms($zipCodeContact, $this->zipCodeAgentB);
 
 				$matchedContact = [
 					'name' => $value[0],
