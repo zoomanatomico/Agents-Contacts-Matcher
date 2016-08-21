@@ -38,7 +38,8 @@ class ZipCodeApiClient
 			
 			Cache::forever($cacheName, $distance);
 		} catch (\Exception $e) {
-			$distance = 0;
+			Cache::forever($cacheName, false);
+			$distance = false;
 		}
 
 		return $distance;

@@ -68,6 +68,8 @@ class AgentsContactsMatcher
 	 */
 	private function getZipCodeOfAssignedAgent($distanceToAgentA, $distanceToAgentB) 
 	{
+		if ($distanceToAgentA == false || $distanceToAgentB == false) return 'Error';
+		
 		return ($distanceToAgentA <= $distanceToAgentB) ? $this->zipCodeAgentA : $this->zipCodeAgentB;
 	}
 }
